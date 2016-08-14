@@ -22,6 +22,27 @@ It is recommended to use a single HibernateTransactionManager for all transactio
 	at grails.transaction.GrailsTransactionTemplate.execute(GrailsTransactionTemplate.groovy:93)
 ----
 
+    $ grails run-app
+
     curl -X POST -H 'Content-Type: application/json' -d '{"firstName": "One", "lastName": "Person"}' 'http://localhost:8080/persons?tenant=1'
     curl -X POST -H 'Content-Type: application/json' -d '{"firstName": "Two", "lastName": "Person"}' 'http://localhost:8080/person/save2?tenant=2'
     curl -X POST -H 'Content-Type: application/json' -d '{"firstName": "Three", "lastName": "Person"}' 'http://localhost:8080/person/save3?tenant=3'
+
+When I run the integration test I get another exception:
+
+    $ ./gradlew integrationTest
+
+    ERROR org.springframework.transaction.support.TransactionSynchronizationUtils -
+    TransactionSynchronization.beforeCompletion threw exception
+    org.hibernate.SessionException: Session is closed!
+    	at org.hibernate.internal.AbstractSessionImpl.errorIfClosed(AbstractSessionImpl.java:132)
+    	at org.hibernate.internal.SessionImpl.disconnect(SessionImpl.java:510)
+    	at org.springframework.orm.hibernate5.SpringSessionSynchronization.beforeCompletion(SpringSessionSynchronization.java:123)
+    	at org.springframework.transaction.support.TransactionSynchronizationUtils.triggerBeforeCompletion(TransactionSynchronizationUtils.java:106)
+    	at org.springframework.transaction.support.AbstractPlatformTransactionManager.triggerBeforeCompletion(AbstractPlatformTransactionManager.java:945)
+    	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processRollback(AbstractPlatformTransactionManager.java:842)
+    	at org.springframework.transaction.support.AbstractPlatformTransactionManager.rollback(AbstractPlatformTransactionManager.java:830)
+    	at org.springframework.transaction.support.TransactionTemplate.rollbackOnException(TransactionTemplate.java:164)
+    	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:137)
+    	at grails.transaction.GrailsTransactionTemplate.execute(GrailsTransactionTemplate.groovy:93)
+    	at session.issue.PersonController.save2(PersonController.groovy)
