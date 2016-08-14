@@ -1,8 +1,8 @@
-= Grails test application for issue #766
+= Grails test application for issue #767
 
 This Grails application was used to verify issue #666 that is about multi-tenancy in Grails 3.2.0.M2 (GORM 6).
 
-https://github.com/grails/grails-data-mapping/issues/766
+https://github.com/grails/grails-data-mapping/issues/767
 
 .Exception
 [source,sh]
