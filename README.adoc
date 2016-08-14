@@ -1,0 +1,27 @@
+= Grails test application for issue #766
+
+This Grails application was used to verify issue #666 that is about multi-tenancy in Grails 3.2.0.M2 (GORM 6).
+
+https://github.com/grails/grails-data-mapping/issues/766
+
+.Exception
+[source,sh]
+----
+Caused by: org.springframework.transaction.IllegalTransactionStateException: Pre-bound JDBC Connection found!
+HibernateTransactionManager does not support running within DataSourceTransactionManager if told to manage the DataSource itself.
+It is recommended to use a single HibernateTransactionManager for all transactions on a single DataSource, no matter whether Hibernate or JDBC access.
+	at grails.transaction.GrailsTransactionTemplate.execute(GrailsTransactionTemplate.groovy:93)
+	at session.issue.PersonController$__tt__save2_closure4.doCall(PersonController.groovy:58)
+	at grails.gorm.multitenancy.Tenants$_withTenantIdInternal_closure1$_closure2.doCall(Tenants.groovy:189)
+	at grails.gorm.multitenancy.Tenants$_withTenantIdInternal_closure1.doCall(Tenants.groovy:182)
+	at grails.gorm.multitenancy.Tenants$CurrentTenant.withTenant(Tenants.groovy:273)
+	at grails.gorm.multitenancy.Tenants.withTenantIdInternal(Tenants.groovy:181)
+	at grails.gorm.multitenancy.Tenants.withCurrent(Tenants.groovy:121)
+	at session.issue.PersonController.$tt__save2(PersonController.groovy:56)
+	at grails.transaction.GrailsTransactionTemplate$2.doInTransaction(GrailsTransactionTemplate.groovy:96)
+	at grails.transaction.GrailsTransactionTemplate.execute(GrailsTransactionTemplate.groovy:93)
+----
+
+    curl -X POST -H 'Content-Type: application/json' -d '{"firstName": "One", "lastName": "Person"}' 'http://localhost:8080/persons?tenant=1'
+    curl -X POST -H 'Content-Type: application/json' -d '{"firstName": "Two", "lastName": "Person"}' 'http://localhost:8080/person/save2?tenant=2'
+    curl -X POST -H 'Content-Type: application/json' -d '{"firstName": "Three", "lastName": "Person"}' 'http://localhost:8080/person/save3?tenant=3'
